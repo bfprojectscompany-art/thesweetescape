@@ -1,0 +1,313 @@
+<div class="section-wrapper form-wrapper" style="padding:40px 20px;max-width:860px;margin:0 auto;">
+
+<style>
+.se-form-wrap { font-family: 'PT Serif', serif; color: #fff; }
+.se-step { display: none; }
+.se-step.active { display: block; }
+.se-progress-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.se-progress-bar { flex: 1; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
+.se-progress-fill { height: 100%; background: #fff; border-radius: 2px; transition: width 0.3s ease; }
+.se-progress-label { white-space: nowrap; font-size: 14px; color: rgba(255,255,255,0.7); font-family: 'Montserrat', sans-serif; }
+.se-question { font-size: 18px; margin-bottom: 28px; line-height: 1.5; }
+.se-required { color: rgba(255,255,255,0.5); }
+.se-options { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+.se-option { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; font-size: 16px; }
+.se-option input[type=checkbox], .se-option input[type=radio] {
+  width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px;
+  accent-color: #fff; cursor: pointer;
+}
+.se-input {
+  width: 100%; box-sizing: border-box;
+  background: transparent; border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 4px; padding: 14px 16px;
+  color: #fff; font-size: 16px; font-family: inherit;
+  margin-bottom: 32px; transition: border-color 0.2s;
+}
+.se-input:focus { outline: none; border-color: #fff; }
+.se-textarea { min-height: 100px; resize: vertical; }
+.se-nav { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; gap: 12px; }
+.se-btn {
+  padding: 14px 32px; border-radius: 50px; font-size: 15px;
+  font-family: 'Montserrat', sans-serif; font-weight: 400;
+  cursor: pointer; transition: opacity 0.2s; border: 1.5px solid #fff;
+  letter-spacing: 0.02em;
+}
+.se-btn-prev { background: transparent; color: #fff; }
+.se-btn-prev:disabled { opacity: 0.3; cursor: default; }
+.se-btn-next, .se-btn-send { background: #fff; color: #0a0a0a; }
+.se-btn-next:hover, .se-btn-send:hover { opacity: 0.85; }
+.se-gdpr { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); margin-bottom: 24px; }
+.se-gdpr label { display: flex; align-items: flex-start; gap: 14px; cursor: pointer; }
+.se-gdpr input { width: 22px; height: 22px; flex-shrink: 0; margin-top: 2px; accent-color: #fff; }
+.se-gdpr a { color: #fff; }
+.se-error { color: #ff6b6b; font-size: 13px; margin-top: -20px; margin-bottom: 16px; display: none; }
+.se-success { text-align: center; padding: 60px 20px; display: none; }
+.se-success h2 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 400; margin-bottom: 16px; }
+.se-success p { color: rgba(255,255,255,0.8); font-size: 16px; }
+.se-human { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,0.6); }
+.se-human svg { width: 18px; height: 18px; }
+</style>
+
+<div class="se-form-wrap">
+
+<!-- Success screen -->
+<div class="se-success" id="se-success">
+  <h2>Nous avons bien reçu votre message.</h2>
+  <p>Merci pour votre message ! Nous vous recontacterons rapidement.</p>
+</div>
+
+<!-- The form -->
+<form id="se-form" name="devis" netlify data-netlify="true" netlify-honeypot="bot-field" onsubmit="seSubmit(event)">
+  <input type="hidden" name="form-name" value="devis">
+  <p style="display:none"><input name="bot-field"></p>
+
+  <!-- Step 1 -->
+  <div class="se-step active" data-step="1">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:10%"></div></div>
+      <span class="se-progress-label">1 / 10</span>
+    </div>
+    <p class="se-question">Quand &amp; où se déroule votre évènement ? (Date, Timing approximatif, durée, lieu (ville))<span class="se-required">&nbsp;*</span></p>
+    <textarea class="se-input se-textarea" name="evenement_details" placeholder="" required></textarea>
+    <div class="se-error" id="err-1">Ce champ est obligatoire.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" disabled onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="se-step" data-step="2">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:20%"></div></div>
+      <span class="se-progress-label">2 / 10</span>
+    </div>
+    <p class="se-question">Votre évènement se déroule t il en intérieur ou extérieur ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="checkbox" name="lieu_type" value="Intérieur"> Intérieur</label>
+      <label class="se-option"><input type="checkbox" name="lieu_type" value="Extérieur"> Extérieur</label>
+    </div>
+    <div class="se-error" id="err-2">Veuillez sélectionner une option.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="se-step" data-step="3">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:30%"></div></div>
+      <span class="se-progress-label">3 / 10</span>
+    </div>
+    <p class="se-question">Combien d'invités attendez vous ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="De 10 et 50"> De 10 et 50</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 50 et 100"> Entre 50 et 100</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 100 et 200"> Entre 100 et 200</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="+ 200"> + 200</label>
+    </div>
+    <div class="se-error" id="err-3">Veuillez sélectionner une option.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="se-step" data-step="4">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:40%"></div></div>
+      <span class="se-progress-label">4 / 10</span>
+    </div>
+    <p class="se-question">Disposez vous d'une sonorisation ou devons-nous la prévoir ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="radio" name="sonorisation" value="Oui tout est déjà prévu" required> Oui tout est déjà prévu</label>
+      <label class="se-option"><input type="radio" name="sonorisation" value="Non, nous avons besoin d'une sono"> Non, nous avons besoin d'une sono</label>
+    </div>
+    <div class="se-error" id="err-4">Veuillez sélectionner une option.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="se-step" data-step="5">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:50%"></div></div>
+      <span class="se-progress-label">5 / 10</span>
+    </div>
+    <p class="se-question">Dans quel délai prenez-vous la décision pour la prestation musicale que vous recherchez ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="radio" name="delai_decision" value="Dans la semaine" required> Dans la semaine</label>
+      <label class="se-option"><input type="radio" name="delai_decision" value="Dans le mois"> Dans le mois</label>
+      <label class="se-option"><input type="radio" name="delai_decision" value="Je ne sais pas"> Je ne sais pas</label>
+    </div>
+    <div class="se-error" id="err-5">Veuillez sélectionner une option.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div class="se-step" data-step="6">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:60%"></div></div>
+      <span class="se-progress-label">6 / 10</span>
+    </div>
+    <p class="se-question">Quel est votre budget estimé HTVA ?<span class="se-required">&nbsp;*</span></p>
+    <input type="text" class="se-input" name="budget" placeholder="" required>
+    <div class="se-error" id="err-6">Ce champ est obligatoire.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 7 -->
+  <div class="se-step" data-step="7">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:70%"></div></div>
+      <span class="se-progress-label">7 / 10</span>
+    </div>
+    <p class="se-question">Quel est votre adresse e-mail ?<span class="se-required">&nbsp;*</span></p>
+    <input type="email" class="se-input" name="email" placeholder="" required>
+    <div class="se-error" id="err-7">Veuillez entrer une adresse e-mail valide.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 8 -->
+  <div class="se-step" data-step="8">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:80%"></div></div>
+      <span class="se-progress-label">8 / 10</span>
+    </div>
+    <p class="se-question">Quel est votre numéro de téléphone ?<span class="se-required">&nbsp;*</span></p>
+    <input type="tel" class="se-input" name="telephone" placeholder="" required>
+    <div class="se-error" id="err-8">Ce champ est obligatoire.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 9 -->
+  <div class="se-step" data-step="9">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:90%"></div></div>
+      <span class="se-progress-label">9 / 10</span>
+    </div>
+    <p class="se-question">Comment êtes vous arrivé sur notre site ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="checkbox" name="source" value="Je vous ai vu en concert"> Je vous ai vu en concert</label>
+      <label class="se-option"><input type="checkbox" name="source" value="Un ou une amie m'a parlé de vous"> Un ou une amie m'a parlé de vous</label>
+      <label class="se-option"><input type="checkbox" name="source" value="Recherche Google"> Recherche Google</label>
+      <label class="se-option"><input type="checkbox" name="source" value="Facebook/Instagram"> Facebook/Instagram</label>
+    </div>
+    <div class="se-error" id="err-9">Veuillez sélectionner une option.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 10 - GDPR + Submit -->
+  <div class="se-step" data-step="10">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:100%"></div></div>
+      <span class="se-progress-label">10 / 10</span>
+    </div>
+    <div class="se-gdpr">
+      <label>
+        <input type="checkbox" name="gdpr_consent" value="oui" required id="gdpr-check">
+        <span>En cliquant sur « Envoyer », j'accepte que les données personnelles saisies dans ce formulaire soient utilisées dans le but de traiter ma demande et de me fournir des conseils personnalisés. J'ai le droit de retirer mon autorisation à tout moment sans effet rétroactif par courrier postal ou électronique.<br><br>Notre <a href="https://www.thesweetescape.be/politique-de-confidentialite/">Politique de confidentialité</a> s'applique.</span>
+      </label>
+    </div>
+    <div class="se-error" id="err-10">Veuillez accepter les conditions.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <div class="se-human">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        Je suis humain
+      </div>
+      <button type="submit" class="se-btn se-btn-send">Envoyer</button>
+    </div>
+  </div>
+
+</form>
+</div>
+
+<script>
+(function() {
+  var current = 1;
+  var total = 10;
+
+  function validate(step) {
+    var errEl = document.getElementById('err-' + step);
+    if (errEl) errEl.style.display = 'none';
+
+    if (step === 1) {
+      var v = document.querySelector('[name="evenement_details"]').value.trim();
+      if (!v) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 2) {
+      var checked = document.querySelectorAll('[name="lieu_type"]:checked');
+      if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 3) {
+      var checked = document.querySelectorAll('[name="nb_invites"]:checked');
+      if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 4) {
+      var checked = document.querySelector('[name="sonorisation"]:checked');
+      if (!checked) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 5) {
+      var checked = document.querySelector('[name="delai_decision"]:checked');
+      if (!checked) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 6) {
+      var v = document.querySelector('[name="budget"]').value.trim();
+      if (!v) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 7) {
+      var el = document.querySelector('[name="email"]');
+      if (!el.value.trim() || !el.checkValidity()) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 8) {
+      var v = document.querySelector('[name="telephone"]').value.trim();
+      if (!v) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 9) {
+      var checked = document.querySelectorAll('[name="source"]:checked');
+      if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 10) {
+      var checked = document.querySelector('[name="gdpr_consent"]:checked');
+      if (!checked) { if(errEl) errEl.style.display='block'; return false; }
+    }
+    return true;
+  }
+
+  window.seGo = function(dir) {
+    if (dir > 0 && !validate(current)) return;
+    var steps = document.querySelectorAll('.se-step');
+    steps[current - 1].classList.remove('active');
+    current += dir;
+    steps[current - 1].classList.add('active');
+    window.scrollTo({ top: document.querySelector('.se-form-wrap').offsetTop - 80, behavior: 'smooth' });
+  };
+
+  window.seSubmit = function(e) {
+    e.preventDefault();
+    if (!validate(10)) return;
+    var form = document.getElementById('se-form');
+    var data = new FormData(form);
+    fetch('/', { method: 'POST', headers: {'Accept': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(data).toString() })
+      .then(function() {
+        form.style.display = 'none';
+        document.getElementById('se-success').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(function() {
+        form.submit();
+      });
+  };
+})();
+</script>
