@@ -75,6 +75,10 @@
   margin-bottom: 32px; transition: border-color 0.2s;
 }
 .se-input:focus { outline: none; border-color: #fff; }
+.se-input[type=date] { color-scheme: dark; min-height: 50px; }
+.se-input[type=date]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.8; }
+.se-label { display: block; font-size: 15px; margin-bottom: 8px; color: rgba(255,255,255,0.85); }
+.se-optional { color: rgba(255,255,255,0.5); font-size: 13px; }
 .se-textarea { min-height: 100px; resize: vertical; }
 .se-nav { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; gap: 12px; }
 .se-btn {
@@ -115,12 +119,15 @@
   <!-- Step 1 -->
   <div class="se-step active" data-step="1">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:10%"></div></div>
-      <span class="se-progress-label">1 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:9%"></div></div>
+      <span class="se-progress-label">1 / 11</span>
     </div>
-    <p class="se-question">Quand &amp; où se déroule votre évènement ? (Date, Timing approximatif, durée, lieu (ville))<span class="se-required">&nbsp;*</span></p>
-    <textarea class="se-input se-textarea" name="evenement_details" placeholder="" required></textarea>
-    <div class="se-error" id="err-1">Ce champ est obligatoire.</div>
+    <p class="se-question">Quand se déroule votre évènement ?<span class="se-required">&nbsp;*</span></p>
+    <label class="se-label" for="date_evenement">Date de l'évènement</label>
+    <input type="date" class="se-input" id="date_evenement" name="date_evenement" required>
+    <label class="se-label" for="timing">Heure de début et durée approximative <span class="se-optional">(facultatif)</span></label>
+    <input type="text" class="se-input" id="timing" name="timing" placeholder="Ex. : 19h, environ 2 h">
+    <div class="se-error" id="err-1">Veuillez indiquer la date de votre évènement.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" disabled onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
@@ -130,15 +137,15 @@
   <!-- Step 2 -->
   <div class="se-step" data-step="2">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:20%"></div></div>
-      <span class="se-progress-label">2 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:18%"></div></div>
+      <span class="se-progress-label">2 / 11</span>
     </div>
-    <p class="se-question">Votre évènement se déroule t il en intérieur ou extérieur ?<span class="se-required">&nbsp;*</span></p>
-    <div class="se-options">
-      <label class="se-option"><input type="checkbox" name="lieu_type" value="Intérieur"> Intérieur</label>
-      <label class="se-option"><input type="checkbox" name="lieu_type" value="Extérieur"> Extérieur</label>
-    </div>
-    <div class="se-error" id="err-2">Veuillez sélectionner une option.</div>
+    <p class="se-question">Où se déroule votre évènement ?<span class="se-required">&nbsp;*</span></p>
+    <label class="se-label" for="ville">Ville</label>
+    <input type="text" class="se-input" id="ville" name="ville" placeholder="Ex. : Bruxelles" required>
+    <label class="se-label" for="adresse">Adresse <span class="se-optional">(facultatif)</span></label>
+    <input type="text" class="se-input" id="adresse" name="adresse" placeholder="Rue, numéro, nom de la salle…">
+    <div class="se-error" id="err-2">Veuillez indiquer la ville de votre évènement.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
@@ -148,15 +155,13 @@
   <!-- Step 3 -->
   <div class="se-step" data-step="3">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:30%"></div></div>
-      <span class="se-progress-label">3 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:27%"></div></div>
+      <span class="se-progress-label">3 / 11</span>
     </div>
-    <p class="se-question">Combien d'invités attendez vous ?<span class="se-required">&nbsp;*</span></p>
+    <p class="se-question">Votre évènement se déroule t il en intérieur ou extérieur ?<span class="se-required">&nbsp;*</span></p>
     <div class="se-options">
-      <label class="se-option"><input type="checkbox" name="nb_invites" value="De 10 et 50"> De 10 et 50</label>
-      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 50 et 100"> Entre 50 et 100</label>
-      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 100 et 200"> Entre 100 et 200</label>
-      <label class="se-option"><input type="checkbox" name="nb_invites" value="+ 200"> + 200</label>
+      <label class="se-option"><input type="checkbox" name="lieu_type" value="Intérieur"> Intérieur</label>
+      <label class="se-option"><input type="checkbox" name="lieu_type" value="Extérieur"> Extérieur</label>
     </div>
     <div class="se-error" id="err-3">Veuillez sélectionner une option.</div>
     <div class="se-nav">
@@ -168,13 +173,15 @@
   <!-- Step 4 -->
   <div class="se-step" data-step="4">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:40%"></div></div>
-      <span class="se-progress-label">4 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:36%"></div></div>
+      <span class="se-progress-label">4 / 11</span>
     </div>
-    <p class="se-question">Disposez vous d'une sonorisation ou devons-nous la prévoir ?<span class="se-required">&nbsp;*</span></p>
+    <p class="se-question">Combien d'invités attendez vous ?<span class="se-required">&nbsp;*</span></p>
     <div class="se-options">
-      <label class="se-option"><input type="radio" name="sonorisation" value="Oui tout est déjà prévu" required> Oui tout est déjà prévu</label>
-      <label class="se-option"><input type="radio" name="sonorisation" value="Non, nous avons besoin d'une sono"> Non, nous avons besoin d'une sono</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="De 10 et 50"> De 10 et 50</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 50 et 100"> Entre 50 et 100</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="Entre 100 et 200"> Entre 100 et 200</label>
+      <label class="se-option"><input type="checkbox" name="nb_invites" value="+ 200"> + 200</label>
     </div>
     <div class="se-error" id="err-4">Veuillez sélectionner une option.</div>
     <div class="se-nav">
@@ -186,14 +193,13 @@
   <!-- Step 5 -->
   <div class="se-step" data-step="5">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:50%"></div></div>
-      <span class="se-progress-label">5 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:45%"></div></div>
+      <span class="se-progress-label">5 / 11</span>
     </div>
-    <p class="se-question">Dans quel délai prenez-vous la décision pour la prestation musicale que vous recherchez ?<span class="se-required">&nbsp;*</span></p>
+    <p class="se-question">Disposez vous d'une sonorisation ou devons-nous la prévoir ?<span class="se-required">&nbsp;*</span></p>
     <div class="se-options">
-      <label class="se-option"><input type="radio" name="delai_decision" value="Dans la semaine" required> Dans la semaine</label>
-      <label class="se-option"><input type="radio" name="delai_decision" value="Dans le mois"> Dans le mois</label>
-      <label class="se-option"><input type="radio" name="delai_decision" value="Je ne sais pas"> Je ne sais pas</label>
+      <label class="se-option"><input type="radio" name="sonorisation" value="Oui tout est déjà prévu" required> Oui tout est déjà prévu</label>
+      <label class="se-option"><input type="radio" name="sonorisation" value="Non, nous avons besoin d'une sono"> Non, nous avons besoin d'une sono</label>
     </div>
     <div class="se-error" id="err-5">Veuillez sélectionner une option.</div>
     <div class="se-nav">
@@ -205,12 +211,16 @@
   <!-- Step 6 -->
   <div class="se-step" data-step="6">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:60%"></div></div>
-      <span class="se-progress-label">6 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:55%"></div></div>
+      <span class="se-progress-label">6 / 11</span>
     </div>
-    <p class="se-question">Quel est votre budget estimé HTVA ?<span class="se-required">&nbsp;*</span></p>
-    <input type="text" class="se-input" name="budget" placeholder="" required>
-    <div class="se-error" id="err-6">Ce champ est obligatoire.</div>
+    <p class="se-question">Dans quel délai prenez-vous la décision pour la prestation musicale que vous recherchez ?<span class="se-required">&nbsp;*</span></p>
+    <div class="se-options">
+      <label class="se-option"><input type="radio" name="delai_decision" value="Dans la semaine" required> Dans la semaine</label>
+      <label class="se-option"><input type="radio" name="delai_decision" value="Dans le mois"> Dans le mois</label>
+      <label class="se-option"><input type="radio" name="delai_decision" value="Je ne sais pas"> Je ne sais pas</label>
+    </div>
+    <div class="se-error" id="err-6">Veuillez sélectionner une option.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
@@ -220,12 +230,12 @@
   <!-- Step 7 -->
   <div class="se-step" data-step="7">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:70%"></div></div>
-      <span class="se-progress-label">7 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:64%"></div></div>
+      <span class="se-progress-label">7 / 11</span>
     </div>
-    <p class="se-question">Quel est votre adresse e-mail ?<span class="se-required">&nbsp;*</span></p>
-    <input type="email" class="se-input" name="email" placeholder="" required>
-    <div class="se-error" id="err-7">Veuillez entrer une adresse e-mail valide.</div>
+    <p class="se-question">Quel est votre budget estimé HTVA ?<span class="se-required">&nbsp;*</span></p>
+    <input type="text" class="se-input" name="budget" placeholder="" required>
+    <div class="se-error" id="err-7">Ce champ est obligatoire.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
@@ -235,12 +245,12 @@
   <!-- Step 8 -->
   <div class="se-step" data-step="8">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:80%"></div></div>
-      <span class="se-progress-label">8 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:73%"></div></div>
+      <span class="se-progress-label">8 / 11</span>
     </div>
-    <p class="se-question">Quel est votre numéro de téléphone ?<span class="se-required">&nbsp;*</span></p>
-    <input type="tel" class="se-input" name="telephone" placeholder="" required>
-    <div class="se-error" id="err-8">Ce champ est obligatoire.</div>
+    <p class="se-question">Quel est votre adresse e-mail ?<span class="se-required">&nbsp;*</span></p>
+    <input type="email" class="se-input" name="email" placeholder="" required>
+    <div class="se-error" id="err-8">Veuillez entrer une adresse e-mail valide.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
@@ -250,8 +260,23 @@
   <!-- Step 9 -->
   <div class="se-step" data-step="9">
     <div class="se-progress-wrap">
-      <div class="se-progress-bar"><div class="se-progress-fill" style="width:90%"></div></div>
-      <span class="se-progress-label">9 / 10</span>
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:82%"></div></div>
+      <span class="se-progress-label">9 / 11</span>
+    </div>
+    <p class="se-question">Quel est votre numéro de téléphone ?<span class="se-required">&nbsp;*</span></p>
+    <input type="tel" class="se-input" name="telephone" placeholder="" required>
+    <div class="se-error" id="err-9">Ce champ est obligatoire.</div>
+    <div class="se-nav">
+      <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
+      <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
+    </div>
+  </div>
+
+  <!-- Step 10 -->
+  <div class="se-step" data-step="10">
+    <div class="se-progress-wrap">
+      <div class="se-progress-bar"><div class="se-progress-fill" style="width:91%"></div></div>
+      <span class="se-progress-label">10 / 11</span>
     </div>
     <p class="se-question">Comment êtes vous arrivé sur notre site ?<span class="se-required">&nbsp;*</span></p>
     <div class="se-options">
@@ -260,18 +285,18 @@
       <label class="se-option"><input type="checkbox" name="source" value="Recherche Google"> Recherche Google</label>
       <label class="se-option"><input type="checkbox" name="source" value="Facebook/Instagram"> Facebook/Instagram</label>
     </div>
-    <div class="se-error" id="err-9">Veuillez sélectionner une option.</div>
+    <div class="se-error" id="err-10">Veuillez sélectionner une option.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <button type="button" class="se-btn se-btn-next" onclick="seGo(1)">Suivant</button>
     </div>
   </div>
 
-  <!-- Step 10 - GDPR + Submit -->
-  <div class="se-step" data-step="10">
+  <!-- Step 11 - GDPR + Submit -->
+  <div class="se-step" data-step="11">
     <div class="se-progress-wrap">
       <div class="se-progress-bar"><div class="se-progress-fill" style="width:100%"></div></div>
-      <span class="se-progress-label">10 / 10</span>
+      <span class="se-progress-label">11 / 11</span>
     </div>
     <div class="se-gdpr">
       <label>
@@ -279,7 +304,7 @@
         <span>En cliquant sur « Envoyer », j'accepte que les données personnelles saisies dans ce formulaire soient utilisées dans le but de traiter ma demande et de me fournir des conseils personnalisés. J'ai le droit de retirer mon autorisation à tout moment sans effet rétroactif par courrier postal ou électronique.<br><br>Notre <a href="/confidentialite">Politique de confidentialité</a> s'applique.</span>
       </label>
     </div>
-    <div class="se-error" id="err-10">Veuillez accepter les conditions.</div>
+    <div class="se-error" id="err-11">Veuillez accepter les conditions.</div>
     <div class="se-nav">
       <button type="button" class="se-btn se-btn-prev" onclick="seGo(-1)">Précédent</button>
       <div class="se-human">
@@ -296,40 +321,43 @@
 <script>
 (function() {
   var current = 1;
-  var total = 10;
+  var total = 11;
 
   function validate(step) {
     var errEl = document.getElementById('err-' + step);
     if (errEl) errEl.style.display = 'none';
 
     if (step === 1) {
-      var v = document.querySelector('[name="evenement_details"]').value.trim();
+      var v = document.querySelector('[name="date_evenement"]').value.trim();
       if (!v) { if(errEl) errEl.style.display='block'; return false; }
     } else if (step === 2) {
+      var v = document.querySelector('[name="ville"]').value.trim();
+      if (!v) { if(errEl) errEl.style.display='block'; return false; }
+    } else if (step === 3) {
       var checked = document.querySelectorAll('[name="lieu_type"]:checked');
       if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 3) {
+    } else if (step === 4) {
       var checked = document.querySelectorAll('[name="nb_invites"]:checked');
       if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 4) {
+    } else if (step === 5) {
       var checked = document.querySelector('[name="sonorisation"]:checked');
       if (!checked) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 5) {
+    } else if (step === 6) {
       var checked = document.querySelector('[name="delai_decision"]:checked');
       if (!checked) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 6) {
+    } else if (step === 7) {
       var v = document.querySelector('[name="budget"]').value.trim();
       if (!v) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 7) {
+    } else if (step === 8) {
       var el = document.querySelector('[name="email"]');
       if (!el.value.trim() || !el.checkValidity()) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 8) {
+    } else if (step === 9) {
       var v = document.querySelector('[name="telephone"]').value.trim();
       if (!v) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 9) {
+    } else if (step === 10) {
       var checked = document.querySelectorAll('[name="source"]:checked');
       if (!checked.length) { if(errEl) errEl.style.display='block'; return false; }
-    } else if (step === 10) {
+    } else if (step === 11) {
       var checked = document.querySelector('[name="gdpr_consent"]:checked');
       if (!checked) { if(errEl) errEl.style.display='block'; return false; }
     }
@@ -347,7 +375,7 @@
 
   window.seSubmit = function(e) {
     e.preventDefault();
-    if (!validate(10)) return;
+    if (!validate(11)) return;
     var form = document.getElementById('se-form');
     var data = new FormData(form);
     function showSuccess() {
